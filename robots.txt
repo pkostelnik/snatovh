@@ -6,10 +6,5 @@ Disallow: /.well-known/
 User-agent: *
 Allow: /
 
-Sitemap: http://www.snat.tech/sitemap.xml
-
-# Gruppe 3
-User-agent: *
-Allow: /
-
-Sitemap: http://www.snat.space/sitemap.xml
+Sitemap: https://www.snat.tech/sitemap.xml
+Sitemap: https://www.snat.space/sitemap.xml

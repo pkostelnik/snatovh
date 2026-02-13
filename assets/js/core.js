@@ -424,7 +424,7 @@ Author:         Suelo
                             'min-width': $self.outerWidth() + 'px'
                         });
                         $self.html('');
-                        $self.typed({
+                        new Typed($self[0], {
                             strings: text,
                             startDelay: 200,
                             typeSpeed: 15,
@@ -432,7 +432,7 @@ Author:         Suelo
                             preStringTyped: function() {
                                 $self.addClass('start');
                             },
-                            callback: function() {
+                            onComplete: function() {
                                 setTimeout(function(){
                                     $self.siblings('.show-after-typing').addClass('show');
                                 }, 250);
@@ -540,14 +540,14 @@ Author:         Suelo
                     })
                 }
 
-                $body.delegate('*[data-toggle="ajax-modal"]','click', function() {
+                $body.on('click', '*[data-toggle="ajax-modal"]', function() {
                     var target = $(this).attr('href')+' #content';　
                     loadContent(target);
 
                     return false; 
                 });
 
-                $ajaxModal.delegate('*[data-dismiss="ajax-modal"]','click', function(){
+                $ajaxModal.on('click', '*[data-dismiss="ajax-modal"]', function(){
                     closeContent();
                     return false;
                 });
@@ -713,7 +713,7 @@ Author:         Suelo
                     }, 10000);
                 };
 
-                $body.delegate('#notification-bar .close','click', function(){
+                $body.on('click', '#notification-bar .close', function(){
                     $notificationBar.removeClass('visible');
                     return false;
                 });
