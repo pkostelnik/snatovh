@@ -1,0 +1,15 @@
+# Gruppe 1
+User-agent: Googlebot
+Disallow: /.well-known/
+
+# Gruppe 2
+User-agent: *
+Allow: /
+
+Sitemap: http://www.snat.tech/sitemap.xml
+
+# Gruppe 3
+User-agent: *
+Allow: /
+
+Sitemap: http://www.snat.space/sitemap.xml
