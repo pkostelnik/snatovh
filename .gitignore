@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+assets/plugins/node_modules/
+
+# Backup
+_backup/
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP
+info.php
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
