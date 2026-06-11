@@ -1,0 +1,380 @@
+/* ==========================================================================
+   Liquid Glass — Apple-inspired material layer
+   Loaded AFTER the base theme to restyle the existing markup into a
+   translucent, depth-rich "Liquid Glass" aesthetic (iOS 26 / macOS Tahoe).
+
+   Strategy: this is an additive override layer. It does not touch the
+   original HTML structure — it re-skins surfaces (nav, cards, timeline,
+   testimonials, buttons, forms, modals) with frosted glass, soft depth,
+   continuous-corner rounding and a specular sheen. Adapts to light/dark
+   via prefers-color-scheme.
+   ========================================================================== */
+
+:root {
+    /* Continuous-corner radii */
+    --lg-radius-sm: 14px;
+    --lg-radius: 22px;
+    --lg-radius-lg: 30px;
+    --lg-radius-pill: 999px;
+
+    /* Glass blur strength */
+    --lg-blur: 22px;
+    --lg-blur-strong: 40px;
+
+    /* Light mode glass materials */
+    --lg-surface: rgba(255, 255, 255, 0.55);
+    --lg-surface-strong: rgba(255, 255, 255, 0.72);
+    --lg-surface-thin: rgba(255, 255, 255, 0.38);
+    --lg-border: rgba(255, 255, 255, 0.65);
+    --lg-border-soft: rgba(255, 255, 255, 0.35);
+    --lg-text: #1d1d1f;
+    --lg-text-muted: rgba(29, 29, 31, 0.6);
+    --lg-shadow: 0 10px 40px rgba(31, 38, 80, 0.16), 0 2px 8px rgba(31, 38, 80, 0.08);
+    --lg-shadow-lg: 0 24px 70px rgba(31, 38, 80, 0.22);
+    --lg-highlight: rgba(255, 255, 255, 0.9);
+
+    /* Accent (kept close to the brand blue) */
+    --lg-accent: #427aeb;
+    --lg-accent-2: #6a5cff;
+    --lg-accent-3: #d16cdd;
+    --lg-tint: rgba(66, 122, 235, 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --lg-surface: rgba(28, 30, 46, 0.5);
+        --lg-surface-strong: rgba(30, 33, 52, 0.7);
+        --lg-surface-thin: rgba(40, 44, 66, 0.34);
+        --lg-border: rgba(255, 255, 255, 0.16);
+        --lg-border-soft: rgba(255, 255, 255, 0.08);
+        --lg-text: #f5f5f7;
+        --lg-text-muted: rgba(245, 245, 247, 0.62);
+        --lg-shadow: 0 12px 44px rgba(0, 0, 0, 0.45), 0 2px 10px rgba(0, 0, 0, 0.35);
+        --lg-shadow-lg: 0 28px 80px rgba(0, 0, 0, 0.55);
+        --lg-highlight: rgba(255, 255, 255, 0.28);
+        --lg-tint: rgba(106, 92, 255, 0.22);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Ambient background — soft animated color "mesh" behind the glass so the
+   blur has something rich to refract. Sits below all content.
+   -------------------------------------------------------------------------- */
+body.ms-fabric::before,
+body::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: -2;
+    background:
+        radial-gradient(42vw 42vw at 12% 18%, rgba(66, 122, 235, 0.55), transparent 60%),
+        radial-gradient(38vw 38vw at 88% 12%, rgba(209, 108, 221, 0.45), transparent 60%),
+        radial-gradient(46vw 46vw at 78% 88%, rgba(106, 92, 255, 0.5), transparent 62%),
+        radial-gradient(40vw 40vw at 20% 82%, rgba(64, 196, 255, 0.4), transparent 60%);
+    filter: saturate(1.1);
+    animation: lg-drift 26s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@media (prefers-color-scheme: light) {
+    body::before { opacity: 0.5; }
+}
+
+@keyframes lg-drift {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(2%, -2%, 0) scale(1.06); }
+    100% { transform: translate3d(-2%, 2%, 0) scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Shared glass surface helper (applied via the selectors below)
+   -------------------------------------------------------------------------- */
+.lg-glass,
+#navigation,
+.nav-toggle,
+.window-toggle,
+.resume-box,
+.feature,
+.image-box,
+.testimonial,
+.timeline-event-content,
+.single-chart,
+.modal-content,
+.btn-toggle,
+.nav-pills .nav-link,
+.section-header-caption .module {
+    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(165%);
+    backdrop-filter: blur(var(--lg-blur)) saturate(165%);
+    background: var(--lg-surface);
+    border: 1px solid var(--lg-border-soft);
+    box-shadow: var(--lg-shadow), inset 0 1px 0 var(--lg-highlight);
+}
+
+/* --------------------------------------------------------------------------
+   Navigation panel — floating glass pill on the side/top
+   -------------------------------------------------------------------------- */
+#navigation.navigation-panel {
+    background: var(--lg-surface-strong);
+    -webkit-backdrop-filter: blur(var(--lg-blur-strong)) saturate(180%);
+    backdrop-filter: blur(var(--lg-blur-strong)) saturate(180%);
+    border-right: 1px solid var(--lg-border-soft);
+    box-shadow: var(--lg-shadow-lg);
+}
+
+#navigation .nav-link {
+    color: var(--lg-text) !important;
+    border-radius: var(--lg-radius-pill);
+    padding: 0.5em 1.1em;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+#navigation .nav-link:hover,
+#navigation .nav-item.active .nav-link {
+    background: var(--lg-tint);
+    color: var(--lg-accent) !important;
+    transform: translateX(4px);
+}
+
+/* Hamburger toggle — round glass chip */
+.nav-toggle {
+    border-radius: var(--lg-radius-pill) !important;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.nav-toggle:hover { transform: scale(1.06); box-shadow: var(--lg-shadow-lg); }
+
+/* --------------------------------------------------------------------------
+   Cards & content blocks
+   -------------------------------------------------------------------------- */
+.resume-box {
+    border-radius: var(--lg-radius-lg);
+    padding: 2rem 2rem 2.25rem;
+    margin-bottom: 2rem;
+}
+
+.feature {
+    border-radius: var(--lg-radius);
+    padding: 1.5rem;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.feature:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--lg-shadow-lg), inset 0 1px 0 var(--lg-highlight);
+}
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--lg-radius-sm);
+    background: var(--lg-tint);
+    color: var(--lg-accent);
+    margin-bottom: 0.75rem;
+}
+
+/* Portfolio image cards */
+.image-box {
+    border-radius: var(--lg-radius);
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+.image-box:hover {
+    transform: translateY(-8px) scale(1.015);
+    box-shadow: var(--lg-shadow-lg), inset 0 1px 0 var(--lg-highlight);
+}
+.image-box .image img { border-radius: 0; transition: transform 0.5s ease; }
+.image-box:hover .image img { transform: scale(1.06); }
+.image-box .content { padding: 1rem 1.25rem 1.25rem; }
+
+/* --------------------------------------------------------------------------
+   Timeline — glass nodes
+   -------------------------------------------------------------------------- */
+.timeline-event-content {
+    border-radius: var(--lg-radius);
+    padding: 1.1rem 1.35rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.timeline-event-content:hover { transform: translateY(-3px); box-shadow: var(--lg-shadow-lg); }
+.timeline-event-point {
+    box-shadow: 0 0 0 4px var(--lg-tint), 0 0 14px rgba(66, 122, 235, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+   Testimonials
+   -------------------------------------------------------------------------- */
+.testimonial {
+    border-radius: var(--lg-radius-lg);
+    padding: 2rem 2.25rem;
+    margin: 1rem;
+}
+.testimonial-author-image {
+    border: 2px solid var(--lg-border);
+    box-shadow: var(--lg-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons — glass + accent variants
+   -------------------------------------------------------------------------- */
+.btn {
+    border-radius: var(--lg-radius-pill);
+    border: 1px solid var(--lg-border-soft);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--lg-shadow); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--lg-accent), var(--lg-accent-2));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(66, 122, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--lg-accent-2), var(--lg-accent));
+    color: #fff;
+}
+
+.btn-outline-white,
+.btn-outline-primary {
+    background: var(--lg-surface-thin);
+    color: var(--lg-text);
+}
+
+.btn-grey,
+.btn-toggle {
+    border-radius: var(--lg-radius-pill);
+    color: var(--lg-text);
+}
+
+/* Pills / isotope filter */
+.nav-pills .nav-link {
+    border-radius: var(--lg-radius-pill);
+    color: var(--lg-text);
+    margin: 0 0.25rem;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+.nav-pills .nav-link.active,
+.nav-pills .nav-link:hover {
+    background: linear-gradient(135deg, var(--lg-accent), var(--lg-accent-2));
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Progress bars & badges
+   -------------------------------------------------------------------------- */
+.progress {
+    background: var(--lg-surface-thin);
+    border-radius: var(--lg-radius-pill);
+    overflow: hidden;
+    border: 1px solid var(--lg-border-soft);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+.progress-bar {
+    background: linear-gradient(90deg, var(--lg-accent), var(--lg-accent-3));
+    border-radius: var(--lg-radius-pill);
+}
+.badge {
+    border-radius: var(--lg-radius-pill);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.badge.bg-secondary { background: var(--lg-surface-strong) !important; color: var(--lg-text) !important; }
+
+/* --------------------------------------------------------------------------
+   Forms — glass inputs
+   -------------------------------------------------------------------------- */
+.form-control,
+.form-control-text {
+    background: var(--lg-surface-thin);
+    border: 1px solid var(--lg-border-soft);
+    border-radius: var(--lg-radius-sm);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--lg-text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.form-control:focus,
+.form-control-text:focus {
+    background: var(--lg-surface);
+    border-color: var(--lg-accent);
+    box-shadow: 0 0 0 4px var(--lg-tint);
+    outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   Floating message window + modals
+   -------------------------------------------------------------------------- */
+.window-toggle {
+    border-radius: var(--lg-radius-pill) !important;
+    width: 60px;
+    height: 60px;
+    box-shadow: var(--lg-shadow-lg), inset 0 1px 0 var(--lg-highlight);
+    transition: transform 0.25s ease;
+}
+.window-toggle:hover { transform: scale(1.08) rotate(4deg); }
+
+.modal-content {
+    border-radius: var(--lg-radius-lg) !important;
+    border: 1px solid var(--lg-border);
+    background: var(--lg-surface-strong);
+    -webkit-backdrop-filter: blur(var(--lg-blur-strong)) saturate(180%);
+    backdrop-filter: blur(var(--lg-blur-strong)) saturate(180%);
+    box-shadow: var(--lg-shadow-lg);
+    color: var(--lg-text);
+}
+
+/* --------------------------------------------------------------------------
+   Section headers / loader / misc polish
+   -------------------------------------------------------------------------- */
+.section-header-caption .module {
+    border-radius: var(--lg-radius-pill);
+    padding: 0.4rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    margin: 0.25rem;
+}
+
+#page-loader { background: var(--lg-surface-strong); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+
+/* Footer glass */
+#footer.bg-dark {
+    background: var(--lg-surface-strong) !important;
+    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+    backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+    border-top: 1px solid var(--lg-border-soft);
+}
+
+/* Hero name — large, tight, Apple-like type */
+#start h1.display-4 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Round the big hero background image edges softly on large screens */
+@media (min-width: 992px) {
+    .bg-image-container { border-radius: 0; }
+}
+
+/* Graceful fallback when backdrop-filter is unsupported */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .lg-glass, #navigation, .resume-box, .feature, .image-box, .testimonial,
+    .timeline-event-content, .modal-content, .nav-toggle, .window-toggle {
+        background: var(--lg-surface-strong);
+    }
+}

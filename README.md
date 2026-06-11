@@ -8,6 +8,18 @@ Persönliche Portfolio- und Lebenslauf-Website von **Pawel Kostelnik** (Manageme
 
 Statische, responsive Single-Page-Website (Mobile-First) mit Unterseiten zu den einzelnen Zertifizierungen. Die Seite stellt Fähigkeiten, Lebenslauf, Zertifikate und Kontaktmöglichkeiten dar.
 
+## Design — Liquid Glass
+
+Die Oberfläche nutzt ein von Apple („Liquid Glass", iOS 26 / macOS Tahoe) inspiriertes
+Material-Design: durchscheinende Glasflächen (`backdrop-filter`-Blur), weiche Tiefe,
+abgerundete Ecken, ein animierter Farb-Verlaufshintergrund sowie ein adaptives
+Hell-/Dunkel-Schema über `prefers-color-scheme`.
+
+Umgesetzt als **additive CSS-Ebene** in [assets/css/liquid-glass.css](assets/css/liquid-glass.css),
+die nach dem Basistheme geladen wird und die bestehende Markup-Struktur lediglich neu
+einkleidet (kein HTML-Umbau). Reduzierte Bewegung wird über `prefers-reduced-motion`
+respektiert; für Browser ohne `backdrop-filter` existiert ein Fallback.
+
 ## Tech-Stack
 
 | Bereich | Technologie | Version |
@@ -30,7 +42,7 @@ index.html              Haupt-Single-Page-Site
 sig.html                E-Mail-Signatur
 staticwebapp.config.json  Azure Static Web Apps Konfiguration (Security-Header)
 assets/
-  css/                  Themes (Themify-Icons, Farbvarianten)
+  css/                  Themes (Themify-Icons, Farbvarianten) + liquid-glass.css (Liquid-Glass-Ebene)
   img/                  Bilder, Logos, Zertifikats-Badges
   js/                   core.js / core.min.js
   plugins/              Vendored Frontend-Bibliotheken
@@ -65,3 +77,24 @@ Ein Push auf `main` löst den Build und das Deployment aus. Sicherheits-Header
 - Alle Bilder mit `alt`-Texten, `<html lang>` gesetzt
 - Externe Links mit `rel="noopener noreferrer"`
 - Web-Accessibility-Best-Practices nach [W3C WAI](https://www.w3.org/WAI/tips/designing/)
+
+## Änderungen & Korrekturen
+
+- **Liquid-Glass-Redesign** als additive CSS-Ebene (`assets/css/liquid-glass.css`),
+  eingebunden in `index.html` und alle Zertifizierungs-Unterseiten.
+- `index.html`: `robots`-Meta von `nofollow` auf `index, follow` korrigiert;
+  Portfolio-Kachel-Titel verlinken nun auf die jeweilige Zertifikatsseite
+  (statt die Startseite per AJAX-Modal zu laden); Google-Maps-Skript lädt
+  `async` (`loading=async`).
+- **Zertifizierungs-Unterseiten** auf den sauberen Template-Stand gebracht:
+  defekte englische Navigation (`#resume`/`#blog`) entfernt, Font Awesome 4 →
+  Font Awesome 7 (`all.min.css` + `v4-shims`), ungenutztes Google-Maps-Skript
+  (mit separat exponiertem API-Key) entfernt, `core.min.js` statt `core.js`,
+  verwaistes englisches Kontaktformular/Video-Modal entfernt.
+
+### Offen
+
+- Das **Kontaktformular-Backend** (`php/`) ist auf Azure Static Web Apps nicht
+  funktionsfähig (kein PHP-Runtime; dem Formular fehlt zudem das vom PHP erwartete
+  CSRF-Feld). Für echten Versand wird eine Azure Function oder ein Dienst wie
+  Formspree benötigt.
