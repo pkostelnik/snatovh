@@ -11,6 +11,17 @@ Author:         Suelo
 (function($) {
 'use strict';
 
+    // jQuery 4 compatibility shim for legacy plugins (scrollTo, easyPieChart)
+    if (typeof $.isFunction !== 'function') {
+        $.isFunction = function(obj) { return typeof obj === 'function'; };
+    }
+    if (typeof $.isArray !== 'function') {
+        $.isArray = Array.isArray;
+    }
+    if (typeof $.trim !== 'function') {
+        $.trim = function(text) { return text == null ? '' : (text + '').trim(); };
+    }
+
     // Main Variables
     // -------------------------------
 
