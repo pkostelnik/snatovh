@@ -470,10 +470,10 @@ Author:         Suelo
                 this.chart($body); 
                 this.contactMap();
                 this.forms();
+                this.points();
                 this.map();
                 this.window();
                 this.modal($body);
-                this.points();
             },
             ajaxModal: function() {
 
@@ -832,7 +832,7 @@ Author:         Suelo
 
                 var $googleMap = $('#google-map');
 
-                if($googleMap.length) {
+                if($googleMap.length && typeof google !== 'undefined' && google.maps && typeof google.maps.Map === 'function') {
 
                     var yourLatitude = $googleMap.data('latitude');   
                     var yourLongitude = $googleMap.data('longitude');    
@@ -858,17 +858,21 @@ Author:         Suelo
                         styles: eval(pickedStyle)
                     };
 
-                    var map = new google.maps.Map(document.getElementById('google-map'), mapOptions);
-                    var myLatLng = new google.maps.LatLng(yourLatitude,yourLongitude);
-                    var image = {
-                        url: 'assets/img/map-marker' + mapMarker + '.png',
-                        anchor: new google.maps.Point(19, 59)
-                    };
-                    var myLocation = new google.maps.Marker({
-                        position: myLatLng,
-                        map: map,
-                        icon: image
-                    });
+                    try {
+                        var map = new google.maps.Map(document.getElementById('google-map'), mapOptions);
+                        var myLatLng = new google.maps.LatLng(yourLatitude,yourLongitude);
+                        var image = {
+                            url: 'assets/img/map-marker' + mapMarker + '.png',
+                            anchor: new google.maps.Point(19, 59)
+                        };
+                        var myLocation = new google.maps.Marker({
+                            position: myLatLng,
+                            map: map,
+                            icon: image
+                        });
+                    } catch (e) {
+                        // Google Maps API not available or incompatible loader; skip map silently
+                    }
                 }
 
             },
