@@ -26,6 +26,7 @@ Eigene Logik liegt in [assets/js/core.js](assets/js/core.js) (minifiziert: [asse
 
 ```
 index.html              Haupt-Single-Page-Site
+ai-disclaimer.html      KI-Disclaimer (Transparenzhinweis)
 *.html                  Zertifizierungs-Unterseiten (MCP, MCT, ITIL, Prince2, …)
 sig.html                E-Mail-Signatur
 staticwebapp.config.json  Azure Static Web Apps Konfiguration (Security-Header)
